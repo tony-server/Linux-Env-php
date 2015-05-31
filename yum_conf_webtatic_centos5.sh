@@ -16,5 +16,5 @@ fi
 
 
 #使用该源 需要指定参数 如以下
+#yum install mysql55 mysql55-server  --enablerepo=webtatic-archive
 #yum info mysql55 --enablerepo=webtatic-archive
-
