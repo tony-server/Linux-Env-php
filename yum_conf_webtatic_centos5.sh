@@ -18,3 +18,4 @@ fi
 #使用该源 需要指定参数 如以下
 #yum install mysql55 mysql55-server  --enablerepo=webtatic-archive
 #yum info mysql55 --enablerepo=webtatic-archive
+#yum install php56w 搭载的模块查看https://webtatic.com/packages/php56/
