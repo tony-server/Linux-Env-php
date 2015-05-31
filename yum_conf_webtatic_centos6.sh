@@ -14,6 +14,7 @@ else
 fi
 
 
-
+#使用该源 需要指定参数 如以下
+#yum info mysql55 --enablerepo=webtatic-archive
 
 
