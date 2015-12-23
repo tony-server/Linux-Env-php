@@ -23,6 +23,7 @@
 --enable-calendar \
 --enable-bcmath \
 --enable-exif \
+--enable-phpdbg \
 --disable-rpath \
 --disable-ipv6 \
 --with-mysql=mysqlnd \
@@ -38,8 +39,8 @@
 --with-imap-ssl \
 --with-jpeg-dir \
 --with-png-dir \
---with-freetype-dir 
-
+--with-freetype-dir \
+--with-readline
 
 
 make && make install
