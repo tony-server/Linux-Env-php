@@ -3,7 +3,7 @@
 # nginx - this script starts and stops the nginx daemon
 #
 # chkconfig:   - 85 15
-# description:  NGINX is an HTTP(S) server, HTTP(S) reverse \
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
 #               proxy and IMAP/POP3 proxy server
 # processname: nginx
 # config:      /etc/nginx/nginx.conf
@@ -19,37 +19,21 @@
 # Check that networking is up.
 [ "$NETWORKING" = "no" ] && exit 0
 
-nginx="/usr/sbin/nginx"
+nginx="/usr/local/openresty/nginx/sbin/nginx"
 prog=$(basename $nginx)
 
-NGINX_CONF_FILE="/etc/nginx/nginx.conf"
+sysconfig="/etc/sysconfig/$prog"
+lockfile="/var/lock/subsys/nginx"
+pidfile="/usr/local/openresty/nginx/logs/${prog}.pid"
 
-[ -f /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+NGINX_CONF_FILE="/usr/local/openresty/nginx/conf/nginx.conf"
 
-lockfile=/var/lock/subsys/nginx
+# [ -f $sysconfig ] && . $sysconfig
 
-make_dirs() {
-   # make required directories
-   user=`$nginx -V 2>&1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
-   if [ -z "`grep $user /etc/passwd`" ]; then
-       useradd -M -s /bin/nologin $user
-   fi
-   options=`$nginx -V 2>&1 | grep 'configure arguments:'`
-   for opt in $options; do
-       if [ `echo $opt | grep '.*-temp-path'` ]; then
-           value=`echo $opt | cut -d "=" -f 2`
-           if [ ! -d "$value" ]; then
-               # echo "creating" $value
-               mkdir -p $value && chown -R $user $value
-           fi
-       fi
-   done
-}
 
 start() {
     [ -x $nginx ] || exit 5
     [ -f $NGINX_CONF_FILE ] || exit 6
-    make_dirs
     echo -n $"Starting $prog: "
     daemon $nginx -c $NGINX_CONF_FILE
     retval=$?
@@ -60,7 +44,7 @@ start() {
 
 stop() {
     echo -n $"Stopping $prog: "
-    killproc $prog -QUIT
+    killproc -p $pidfile $prog
     retval=$?
     echo
     [ $retval -eq 0 ] && rm -f $lockfile
@@ -68,26 +52,24 @@ stop() {
 }
 
 restart() {
-    configtest || return $?
+    configtest_q || return 6
     stop
-    sleep 1
     start
 }
 
 reload() {
-    configtest || return $?
+    configtest_q || return 6
     echo -n $"Reloading $prog: "
-    killproc $nginx -HUP
-    RETVAL=$?
+    killproc -p $pidfile $prog -HUP
     echo
 }
 
-force_reload() {
-    restart
+configtest() {
+    $nginx -t -c $NGINX_CONF_FILE
 }
 
-configtest() {
-  $nginx -t -c $NGINX_CONF_FILE
+configtest_q() {
+    $nginx -t -q -c $NGINX_CONF_FILE
 }
 
 rh_status() {
@@ -96,6 +78,37 @@ rh_status() {
 
 rh_status_q() {
     rh_status >/dev/null 2>&1
+}
+
+# Upgrade the binary with no downtime.
+upgrade() {
+    local oldbin_pidfile="${pidfile}.oldbin"
+
+    configtest_q || return 6
+    echo -n $"Upgrading $prog: "
+    killproc -p $pidfile $prog -USR2
+    retval=$?
+    sleep 1
+    if [[ -f ${oldbin_pidfile} && -f ${pidfile} ]];  then
+        killproc -p $oldbin_pidfile $prog -QUIT
+        success $"$prog online upgrade"
+        echo 
+        return 0
+    else
+        failure $"$prog online upgrade"
+        echo
+        return 1
+    fi
+}
+
+# Tell nginx to reopen logs
+reopen_logs() {
+    configtest_q || return 6
+    echo -n $"Reopening $prog logs: "
+    killproc -p $pidfile $prog -USR1
+    retval=$?
+    echo
+    return $retval
 }
 
 case "$1" in
@@ -107,23 +120,25 @@ case "$1" in
         rh_status_q || exit 0
         $1
         ;;
-    restart|configtest)
+    restart|configtest|reopen_logs)
         $1
+        ;;
+    force-reload|upgrade) 
+        rh_status_q || exit 7
+        upgrade
         ;;
     reload)
         rh_status_q || exit 7
         $1
         ;;
-    force-reload)
-        force_reload
-        ;;
-    status)
-        rh_status
+    status|status_q)
+        rh_$1
         ;;
     condrestart|try-restart)
-        rh_status_q || exit 0
-            ;;
+        rh_status_q || exit 7
+        restart
+      ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+        echo $"Usage: $0 {start|stop|reload|configtest|status|force-reload|upgrade|restart|reopen_logs}"
         exit 2
 esac
