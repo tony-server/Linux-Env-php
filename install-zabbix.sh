@@ -1,6 +1,6 @@
 
 # 对服务器的一些设置
-setenforce 0 #关闭SELinux
+setenforce 0 #关闭SELinux; shell>sestatus -v
 
 
 # add gourp and user for zabbix
