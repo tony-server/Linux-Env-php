@@ -3,7 +3,7 @@
 setenforce 0 #关闭SELinux; shell>sestatus -v
 
 
-# add gourp and user for zabbix
+# add gourp and user for zabbix 使用yum安装 不需要以下命令， 会自动添加组和用户
 # 如果server和agent运行在同一台主机上，请用不同用户分别运行它们
 groupadd zabbix
 useradd -g zabbix zabbix
