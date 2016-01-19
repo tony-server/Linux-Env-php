@@ -1,4 +1,8 @@
 
+# 对服务器的一些设置
+setenforce 0 #关闭SELinux
+
+
 # add gourp and user for zabbix
 # 如果server和agent运行在同一台主机上，请用不同用户分别运行它们
 groupadd zabbix
