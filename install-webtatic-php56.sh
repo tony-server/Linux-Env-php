@@ -18,7 +18,7 @@ phpize
 ./configure 
 make && make install
 
-# 安装phalcon扩展
+# 安装phalcon扩展（新建phalcon.ini 放到/etc/php.d/中）
 git clone --depth=1 git://github.com/phalcon/cphalcon.git
 cd cphalcon/build
 ./install
