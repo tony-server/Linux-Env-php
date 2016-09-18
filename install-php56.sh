@@ -1,5 +1,20 @@
 #!/bin/bash
 
+
+#UBUNTU
+sudo apt-get install git build-essential m4 autoconf libxml2-dev libssl-dev libbz2-dev \
+libcurl3-dev libjpeg-dev libpng-dev libxpm-dev libfreetype6-dev \
+libgmp3-dev libc-client-dev libldap2-dev libmcrypt-dev \
+libmhash-dev freetds-dev  \
+ncurses-dev libpcre3-dev libaspell-dev \
+libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev \
+
+
+#CENTOS
+
+
+
+# ./configure
 ./configure --prefix=/usr/local/php56 \
 --with-config-file-path=/usr/local/php56/etc \
 --with-config-file-scan-dir=/usr/local/php56/etc/conf.d \
