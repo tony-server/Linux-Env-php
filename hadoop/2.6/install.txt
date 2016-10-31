@@ -1,0 +1,64 @@
+
+下载hadoop的binary包
+wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.6.5/hadoop-2.6.5.tar.gz
+
+下载oracleJdk  jdk-7u79-linux-x64.tar.gz (jdk1.7.0_79)
+
+
+hadoop2.6.5
+安装前需要准备的工作
+http://wiki.apache.org/hadoop/HadoopJavaVersions
+1、卸载centos6自带的openjdk
+	$rpm -qa|grep java
+	$yum remove java-1.7.0-openjdk-1.7.0.79-2.5.5.4.el6.x86_64
+	$yum remove java-1.6.0-openjdk-1.6.0.35-1.13.7.1.el6_6.x86_64
+	$yum remove tzdata-java-2015e-1.el6.noarch
+1.1、安装oracleJdk
+	$mkdir /usr/local/java
+	$cp jdk-7u79-linux-x64.tar.gz /usr/local/java
+	$tar zxvf jdk-7u79-linux-x64.tar.gz
+1.2、配置java环境变量
+	$vi /etc/profile
+	export JAVA_HOME=/usr/local/java/jdk1.7.0_79
+	export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+	export PATH=$JAVA_HOME/bin:$PATH
+
+	$source /etc/profile
+	$java -version
+
+2、ssh			centos自带
+3、rsync		yum安装
+
+4、创建用户和组
+	$groupadd hadoop
+	$useradd -g hadoop hduser
+	$id hduser
+
+5、配置hduser用户的ssh无密码登录
+	$su hduser
+	$ssh-keygen -t rsa
+	$cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+6、解压 
+	$mkdir /usr/local/hadoop
+	$chown -R hduser:hadoop /usr/local/hadoop
+	$cp hadoop-2.6.5.tar.gz /usr/local/hadoop/
+	$chown hduser:hadoop hadoop-2.6.5.tar.gz
+	$su hduser
+	$tar zxvf hadoop-2.6.5.tar.gz
+7、配置hadoop环境变量
+	$vi /etc/profile
+	export HADOOP_PREFIX=/usr/local/hadoop/hadoop-2.6.5
+	export PATH=$PATH:$HADOOP_PREFIX/bin
+	$source /etc/profile
+
+	vim hadoop-env.sh #这里也再要配置HADOOP_PREFIX和JAVA_HOME
+8、测试是否安装成功
+	$hadoop
+	$hadoop namenode -format
+	$./sbin/start-all.sh
+	$./sbin/stop-all.sh
+	$jps
+	
+	访问http://localhost:8088
+	访问http://localhost:50070
