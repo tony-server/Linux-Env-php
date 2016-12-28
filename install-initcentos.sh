@@ -6,4 +6,8 @@ yum groupinstall -y "Development Tools"
 yum install bash-completion
 source /etc/bash_completion
 
+# 系统内核优化
+vi /etc/sysctl.conf
 
+# 使配置生效
+/sbin/sysctl -p 
