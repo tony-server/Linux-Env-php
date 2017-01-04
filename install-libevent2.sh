@@ -13,8 +13,23 @@ echo "/usr/local/libevent2/lib" > libevent2.conf
 ldconfig
 
 
+#PHP扩展
+#https://pecl.php.net/package/libevent
+wget https://pecl.php.net/get/libevent-0.1.0.tgz
+tar zxvf libevent-0.1.0.tgz
+cd libevent-0.1.0
+phpize
+./configure  --with-libevent=/usr/local/libevent2
+make
+make install
+#libevent.so需要依赖sockets.so，需要在sockets.so之后加载libevent.so
+# vi php.ini
+# extension=sockets.so
+# extension=libevent.so
 
-#测试代码 event.c
+
+
+#c的测试代码 event.c
 
 :<<!
 
