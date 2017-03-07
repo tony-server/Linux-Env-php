@@ -28,10 +28,12 @@ $ . venv/bin/activate  或  $ source venv/bin/activate
 (venv)$ deactivate
 
 # 安装Scrapy 基于python2.7
-# 在激活的环境下安装Twisted
-$ easy_install Twisted
+# 在激活的环境(python2.7)下手动安装Twisted
+$ wget https://pypi.python.org/packages/d2/5d/ed5071740be94da625535f4333793d6fd238f9012f0fee189d0c5d00bd74/Twisted-17.1.0.tar.bz2
+$ tar jxvf Twisted-17.1.0.tar.bz2
+$ cd Twisted-17.1.0
+$ python setup.py install
 $ pip install Scrapy
-
 
 # 安装Flask
 $ pip install Flask
