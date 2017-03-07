@@ -27,6 +27,12 @@ $ . venv/bin/activate  或  $ source venv/bin/activate
 # 在激活的环境下使用deactivate命令来结束激活
 (venv)$ deactivate
 
+# 安装Scrapy 基于python2.7
+# 在激活的环境下安装Twisted
+$ easy_install Twisted
+$ pip install Scrapy
+
+
 # 安装Flask
 $ pip install Flask
 
