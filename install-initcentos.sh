@@ -12,6 +12,11 @@ vi /etc/sysctl.conf
 # 使配置生效
 /sbin/sysctl -p 
 
+# ulimit -n 设置永久生效
+vi /etc/security/limits.conf
+# 追加如下内容：* 表示所有用户
+# * soft nofile 65535
+# * hard nofile 65535
 
 
 #-------------------------/sysctl.conf-----------------------------------------------
