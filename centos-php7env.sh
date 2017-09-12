@@ -97,9 +97,17 @@ cd ${SRC_DIR} \
  --with-curl=${CURL_INSTALL_DIR} \
  --with-mcrypt \
  --with-mhash \
- --without-pear  --disable-phar \
+ --without-pear \
 && make \
 && make install
+
+#成功编译安装完成后，再安装pear
+# ln -s /usr/local/php71/bin/php /usr/bin/php
+# wget  http://pear.php.net/go-pear.phar 
+# php go-pear.phar
+
+
+
 
 #php-yaml
 echo "+--------------------------------------------------+"
