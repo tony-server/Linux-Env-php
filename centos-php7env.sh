@@ -155,7 +155,8 @@ cd ${SRC_DIR} \
 && ./configure --with-php-config=$PHP_INSTALL_DIR/bin/php-config 1>/dev/null \
 && make clean \
 && make 1>/dev/null \
-&& make install
+&& make install \
+&& echo 'extension=redis.so'>$PHP_INSTALL_DIR/etc/php.d/redis.ini
 
 #php-imagick
 echo "+--------------------------------------------------+"
